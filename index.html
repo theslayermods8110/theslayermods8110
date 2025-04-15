@@ -15,29 +15,28 @@
             --primary-purple: #8A2BE2;
             --light-purple-hover: #a75af0;
             --dark-bg: #181824;
-            --panel-bg: rgba(31, 31, 46, 0.9); /* Ligeramente más opaco */
+            --panel-bg: rgba(31, 31, 46, 0.9);
             --content-bg: #1f1f2e;
             --text-color: #e0e0e0;
             --text-secondary: #b0b0b0;
             --border-color: var(--primary-purple);
             --border-radius-sml: 6px;
             --box-shadow-color: rgba(138, 43, 226, 0.3);
-            --panel-width: 230px; /* Definir ancho del panel como variable */
+            --panel-width: 230px;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--dark-bg); color: var(--text-color); min-height: 100vh; line-height: 1.5; overflow-x: hidden; /* Evitar scroll horizontal por si acaso */ }
+        body { font-family: 'Roboto', sans-serif; background-color: var(--dark-bg); color: var(--text-color); min-height: 100vh; line-height: 1.5; overflow-x: hidden; }
 
-        /* Botón para mostrar/ocultar el menú */
         #menu-toggle {
-            position: fixed; /* Fijo en la pantalla */
+            position: fixed;
             top: 15px;
             left: 15px;
-            z-index: 1001; /* Encima del panel */
+            z-index: 1001;
             background-color: var(--primary-purple);
             color: white;
             border: none;
             padding: 8px 10px;
-            font-size: 1.2em; /* Tamaño del icono */
+            font-size: 1.2em;
             border-radius: var(--border-radius-sml);
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
@@ -47,29 +46,25 @@
             background-color: var(--light-purple-hover);
         }
 
-        /* Panel de Navegación */
         #panel-navegacion {
-            position: fixed; /* Fijo en la pantalla */
+            position: fixed;
             top: 0;
             left: 0;
-            bottom: 0; /* O height: 100vh; */
+            bottom: 0;
             width: var(--panel-width);
             background: var(--panel-bg);
             backdrop-filter: blur(5px);
-            border-right: 1px solid var(--border-color); /* Borde solo a la derecha */
+            border-right: 1px solid var(--border-color);
             box-shadow: 3px 0 15px var(--box-shadow-color);
             display: flex;
             flex-direction: column;
             padding: 20px 15px;
             overflow-y: auto;
-            z-index: 1000; /* Encima del contenido, debajo del toggle */
-
-            /* Oculto por defecto fuera de la pantalla */
+            z-index: 1000;
             transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out; /* Animación suave */
+            transition: transform 0.3s ease-in-out;
         }
 
-        /* Clase para mostrar el panel */
         #panel-navegacion.panel-visible {
             transform: translateX(0);
         }
@@ -99,39 +94,33 @@
         #boton-inicio button:hover { background-color: rgba(255, 255, 255, 0.05); border-color: var(--text-color); color: var(--text-color); }
         #boton-inicio button:hover i { color: var(--text-color); }
 
-        /* Área de Contenido */
         #area-contenido {
-            width: 100%; /* Ocupa todo el ancho */
-            min-height: 100vh; /* Ocupa todo el alto */
+            width: 100%;
+            min-height: 100vh;
             background-color: var(--content-bg);
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
-            position: relative; /* Para contexto de algún elemento interno si fuera necesario */
-            /* Quitamos borde y padding del contenedor principal, ya no son necesarios aquí */
-            /* El contenido ahora puede usar toda la ventana */
+            position: relative;
         }
         #texto-inicial { color: var(--text-secondary); font-style: italic; text-align: center; padding: 20px; }
-        #iframe-contenido { width: 100%; height: 100vh; /* Asegura que llene el viewport */ border: none; display: none; background-color: var(--dark-bg); /* Fondo mientras carga, puede ser #fff o el del body */ }
+        #iframe-contenido { width: 100%; height: 100vh; border: none; display: none; background-color: var(--dark-bg); }
 
     </style>
 </head>
 <body>
 
-    <!-- Botón para mostrar/ocultar el menú -->
     <button id="menu-toggle" title="Mostrar/Ocultar Panel">
         <i class="fas fa-bars"></i>
     </button>
 
-    <!-- El contenedor principal ya no necesita ser flex -->
     <div class="contenedor-principal">
 
         <div id="panel-navegacion">
-            <!-- El H2 ya no necesita el icono de menú, lo quitamos o lo dejamos como decoración -->
             <h2><i class="fas fa-compass"></i> Panel</h2>
 
-            <button class="boton-panel" data-url="https://theslayermods8110-wyth.vercel.app/">
+            <button class="boton-panel" data-url="https://slayer666.vercel.app/">
                 <i class="fas fa-tools fa-fw"></i>
                 TOOLS PRO
             </button>
@@ -143,7 +132,6 @@
                  <i class="fas fa-search fa-fw"></i>
                  BÚSQUEDA
             </button>
-            <!-- Puedes añadir más botones aquí -->
 
             <div id="boton-inicio">
                  <button title="Limpiar contenido y volver al inicio">
@@ -170,39 +158,26 @@
             const iframeContenido = document.getElementById('iframe-contenido');
             const textoInicial = document.getElementById('texto-inicial');
             const botonLimpiar = document.querySelector('#boton-inicio button');
-            // const areaContenido = document.getElementById('area-contenido'); // Para cerrar al hacer clic fuera (opcional)
 
             function mostrarPanel() {
                 panelNavegacion.classList.add('panel-visible');
-                // Podrías cambiar el icono del toggle aquí si quieres (ej. a una 'X')
-                // menuToggle.innerHTML = '<i class="fas fa-times"></i>';
             }
 
             function ocultarPanel() {
                 panelNavegacion.classList.remove('panel-visible');
-                // Y volver al icono original
-                // menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
             }
 
             function togglePanel() {
                 panelNavegacion.classList.toggle('panel-visible');
-                 // Cambiar icono (opcional)
-                 // if (panelNavegacion.classList.contains('panel-visible')) {
-                 //    menuToggle.innerHTML = '<i class="fas fa-times"></i>';
-                 // } else {
-                 //    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
-                 // }
             }
 
             function cargarUrlEnIframe(url) {
                 if (url) {
                     textoInicial.style.display = 'none';
                     iframeContenido.style.display = 'block';
-                    // Para evitar problemas de caché o recarga forzada, podemos añadir un timestamp
-                    // iframeContenido.src = url + "?t=" + new Date().getTime();
-                    iframeContenido.src = url; // Mantenemos simple por ahora
+                    iframeContenido.src = url;
                     console.log("Intentando cargar URL:", url);
-                    ocultarPanel(); // Ocultar panel después de seleccionar una opción
+                    ocultarPanel();
                 }
             }
 
@@ -211,51 +186,35 @@
                 iframeContenido.style.display = 'none';
                 textoInicial.style.display = 'block';
                 console.log("Volviendo al inicio.");
-                ocultarPanel(); // Ocultar panel también al limpiar
+                ocultarPanel();
             }
 
-            // Event Listener para el botón del menú
             if (menuToggle) {
                 menuToggle.addEventListener('click', togglePanel);
             } else {
                 console.error("No se encontró el botón #menu-toggle.");
             }
 
-            // Event Listeners para los botones dentro del panel
             botonesPanel.forEach(boton => {
                 boton.addEventListener('click', () => {
                     const url = boton.getAttribute('data-url');
                     if (!url || url === "#" || url === "") {
                          console.warn("Botón clickeado sin URL válida:", boton.textContent.trim());
-                         ocultarPanel(); // Ocultar panel incluso si no hay URL
+                         ocultarPanel();
                          return;
                     }
                     cargarUrlEnIframe(url);
                 });
             });
 
-            // Event Listener para el botón de limpiar
             if (botonLimpiar) {
                 botonLimpiar.addEventListener('click', volverAlInicio);
             } else {
                  console.error("No se encontró el botón de limpiar.");
             }
 
-            // Opcional: Cerrar el panel si se hace clic fuera de él
-            // document.addEventListener('click', (event) => {
-            //     // Si el panel está visible y el clic NO fue en el panel NI en el botón de toggle...
-            //     if (panelNavegacion.classList.contains('panel-visible') &&
-            //         !panelNavegacion.contains(event.target) &&
-            //         !menuToggle.contains(event.target)) {
-            //         ocultarPanel();
-            //     }
-            // });
-
-            // Estado inicial (panel oculto, texto inicial visible)
-            volverAlInicio(); // Llama a la función que ya oculta el iframe y muestra el texto inicial
-            // Asegurarse de que el panel esté oculto al cargar
+            volverAlInicio();
             ocultarPanel();
-
         });
     </script>
 
