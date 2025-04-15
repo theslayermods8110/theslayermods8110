@@ -1,212 +1,620 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>Gemini API Example</title>
-  <!-- jQuery CDN (optional, but often useful) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u12izCmEH4hvjM0JKGOE5jyef5oE7bZdwkLjvoKsSQg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clonador HTML Avanzado v2.0</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
 
-  <style>
-    body {
-      font-family: sans-serif;
-    }
-    #promptInput {
-      width: 80%;
-      padding: 10px;
-      margin-bottom: 10px;
-    }
-    #responseArea {
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 10px;
-      white-space: pre-wrap; /* Preserve formatting */
-      min-height: 100px; /* Ensure the response area is always visible */
-    }
-    #loadingIndicator {
-      display: none;
-      font-style: italic;
-      color: gray;
-    }
-    .safety-rating {
-      margin-top: 5px;
-      font-size: 0.8em;
-    }
-    .safety-category {
-      font-weight: bold;
-    }
+        :root {
+            --primary-purple: #8A2BE2; /* BlueViolet */
+            --dark-purple: #4B0082;   /* Indigo */
+            --light-purple: #a75af0; /* Lighter violet for hover */
+            --accent-purple: #6a0dad;  /* Medium Purple */
+            --light-gray: #cccccc;
+            --dark-bg: #12121f; /* Dark blueish-purple */
+            --container-bg: rgba(31, 31, 46, 0.88); /* Slightly more opaque */
+            --input-bg: #1f1f2e; /* Dark input bg */
+            --text-color: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --border-radius-std: 8px; /* Slightly more rounded */
+            --border-thin: 1px solid var(--primary-purple);
+            --border-focus: 2px solid var(--light-purple);
+            --box-shadow-color: rgba(138, 43, 226, 0.5); /* Box shadow from primary */
+            --success-color: #28a745;
+            --error-color: #dc3545;
+            --warning-color: #ffc107;
+            --info-color: #17a2b8; /* Teal/Info */
+        }
 
-    #apiKeyInputContainer {
-      margin-bottom: 10px;
-    }
-    #imageDisplay {
-      margin-top: 10px;
-      display: none; /* IMPORTANT: Initially hide the imageDisplay */
-    }
-    #imageDisplay img {
-      max-width: 500px; /* Adjust as needed */
-      max-height: 300px; /* Adjust as needed */
-    }
-  </style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(145deg, var(--dark-bg) 0%, var(--dark-purple) 100%);
+            color: var(--text-color);
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 95%; /* Wider */
+            margin: 20px auto;
+            background: var(--container-bg);
+            backdrop-filter: blur(6px);
+            padding: 35px 40px;
+            border-radius: var(--border-radius-std);
+            border: var(--border-thin);
+            box-shadow: 0 0 30px var(--box-shadow-color);
+        }
+
+        h1 {
+            text-align: center;
+            font-family: 'Orbitron', sans-serif;
+            color: var(--primary-purple);
+            margin-bottom: 35px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--accent-purple);
+            font-size: 2.2em;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(138, 43, 226, 0.4);
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 25px;
+            gap: 15px;
+            align-items: center; /* Align items vertically */
+        }
+
+        #urlInput {
+            flex-grow: 1;
+            padding: 14px 18px;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border: var(--border-thin);
+            border-radius: var(--border-radius-std);
+            font-size: 1.1em; /* Larger font */
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        #urlInput::placeholder {
+            color: #777;
+        }
+
+        #urlInput:focus {
+            border: var(--border-focus);
+            box-shadow: 0 0 10px var(--box-shadow-color);
+        }
+
+        button {
+            padding: 14px 28px;
+            border-radius: var(--border-radius-std);
+            border: none;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.1s ease, box-shadow 0.3s ease;
+            white-space: nowrap;
+            display: inline-flex; /* Align icon and text */
+            align-items: center;
+            justify-content: center;
+            gap: 8px; /* Space between icon and text */
+        }
+
+        button:disabled {
+            background: var(--accent-purple) !important; /* More prominent disabled state */
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        #fetchButton {
+            background: linear-gradient(90deg, var(--primary-purple) 0%, var(--dark-purple) 100%);
+            color: white;
+            box-shadow: 0 5px 12px rgba(138, 43, 226, 0.35);
+        }
+
+        #fetchButton:hover:not(:disabled) {
+            background: linear-gradient(90deg, var(--light-purple) 0%, var(--accent-purple) 100%);
+            box-shadow: 0 7px 18px rgba(138, 43, 226, 0.5);
+            transform: translateY(-2px);
+        }
+
+        #fetchButton:active:not(:disabled) {
+            transform: translateY(0);
+            box-shadow: 0 3px 8px rgba(138, 43, 226, 0.25);
+        }
+
+        #copyProcessedButton, #copyOriginalButton {
+            background-color: var(--input-bg); /* Match input bg */
+            color: var(--primary-purple);
+            border: 1px solid var(--primary-purple);
+            margin-left: 5px;
+             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #copyProcessedButton:hover:not(:disabled),
+        #copyOriginalButton:hover:not(:disabled) {
+            background-color: var(--primary-purple);
+            color: white;
+             border-color: var(--primary-purple);
+             box-shadow: 0 6px 12px rgba(138, 43, 226, 0.4);
+             transform: translateY(-1px);
+        }
+         #copyProcessedButton:active:not(:disabled),
+         #copyOriginalButton:active:not(:disabled) {
+             transform: translateY(0);
+             box-shadow: 0 2px 5px rgba(138, 43, 226, 0.3);
+         }
+
+
+        #status {
+            margin-top: 20px;
+            font-weight: bold;
+            min-height: 24px;
+            padding: 12px 18px;
+            border-radius: var(--border-radius-std);
+            display: none; /* Initially hidden */
+            text-align: center;
+            font-size: 0.95em;
+            border: 1px solid;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        #status.info { background-color: rgba(23, 162, 184, 0.2); color: #8bebf8; border-color: var(--info-color); display: block; }
+        #status.success { background-color: rgba(40, 167, 69, 0.2); color: #a3f5b8; border-color: var(--success-color); display: block; }
+        #status.error { background-color: rgba(220, 53, 69, 0.2); color: #f8d7da; border-color: var(--error-color); display: block; }
+        #status.warning { background-color: rgba(255, 193, 7, 0.2); color: #fff3cd; border-color: var(--warning-color); display: block; }
+
+
+        .tabs {
+            display: flex;
+            margin-bottom: 0; /* Remove bottom margin */
+            margin-top: 35px;
+            border-bottom: 1px solid var(--accent-purple); /* Line below tabs */
+        }
+
+        .tab-link {
+            padding: 12px 25px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            margin-bottom: -1px; /* Overlap the bottom border */
+            background-color: transparent; /* Transparent inactive */
+            color: var(--light-gray);
+            border-radius: var(--border-radius-std) var(--border-radius-std) 0 0;
+            font-size: 1em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            position: relative; /* For potential ::after pseudo-element */
+             white-space: nowrap;
+        }
+        .tab-link i { margin-right: 6px; }
+
+        .tab-link.active {
+            background-color: var(--input-bg); /* Match input bg for active tab */
+            border-color: var(--accent-purple);
+            border-bottom-color: var(--input-bg); /* Hide bottom border part */
+            color: var(--primary-purple);
+            font-weight: bold;
+        }
+
+        .tab-link:hover:not(.active) {
+             background-color: rgba(255, 255, 255, 0.05);
+             color: var(--text-color);
+        }
+
+
+        .tab-content {
+            display: none;
+            padding: 25px;
+            border: 1px solid var(--accent-purple);
+            border-top: none; /* Top border handled by tabs */
+            background-color: var(--input-bg); /* Match active tab bg */
+            min-height: 550px; /* Slightly larger */
+            border-radius: 0 0 var(--border-radius-std) var(--border-radius-std); /* Round bottom corners */
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tab-content p em {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            display: block;
+            margin-bottom: 15px;
+        }
+        .tab-content p strong {
+             color: var(--light-purple);
+        }
+
+        #previewFrame {
+            width: 100%;
+            height: 650px; /* Taller */
+            border: var(--border-thin);
+            border-radius: var(--border-radius-std);
+            background-color: #fff; /* White background for better contrast usually */
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+        }
+
+        #processedHtmlOutput, #originalHtmlOutput {
+            width: calc(100% - 30px); /* Adjust width based on padding */
+            height: 650px; /* Taller */
+            padding: 15px;
+            border: var(--border-thin);
+            border-radius: var(--border-radius-std);
+            font-family: "Consolas", "Courier New", Courier, monospace; /* Better coding font */
+            font-size: 14px;
+            white-space: pre;
+            overflow: auto;
+            resize: vertical;
+            background-color: var(--dark-bg); /* Darker background for code */
+            color: var(--text-color);
+             box-shadow: inset 0 0 8px rgba(0,0,0,0.3);
+             outline: none;
+        }
+         #processedHtmlOutput::placeholder, #originalHtmlOutput::placeholder {
+             color: #666;
+         }
+
+        .loader {
+            border: 4px solid rgba(255, 255, 255, 0.2); /* Lighter border */
+            border-top: 4px solid var(--primary-purple); /* Purple spinner */
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block; /* Will be controlled by JS */
+            vertical-align: middle;
+            margin-left: 8px; /* Space it from text */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .button-group {
+            margin-top: 15px;
+            display: flex;
+            justify-content: flex-end; /* Align buttons to the right */
+            gap: 10px;
+        }
+
+    </style>
 </head>
 <body>
 
-  <h1>Gemini API Example</h1>
+<div class="container">
+    <h1><i class="fas fa-rocket"></i> Clonador HTML Avanzado</h1>
 
-  <div id="apiKeyInputContainer">
-      <label for="apiKeyInput">Enter your Gemini API Key:</label>
-      <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
-      <button id="saveApiKeyButton">Save API Key</button>
-  </div>
+    <div class="input-group">
+        <input type="url" id="urlInput" placeholder="https://ejemplo.com" required>
+        <button id="fetchButton">
+            <i class="fas fa-cloud-download-alt"></i>
+            Obtener HTML
+            <span id="loader" class="loader" style="display: none;"></span>
+        </button>
+    </div>
 
-  <label for="promptInput">Enter your prompt:</label><br>
-  <input type="text" id="promptInput" value="Explain how AI works in simple terms."><br>
-  <button id="generateButton">Generate Response</button>
+    <div id="status"></div>
 
-  <div id="loadingIndicator">Loading...</div>
+    <div class="tabs">
+        <span class="tab-link active" data-tab="preview"><i class="fas fa-eye"></i> Vista Previa</span>
+        <span class="tab-link" data-tab="processed-source"><i class="fas fa-file-code"></i> Fuente Procesada</span>
+        <span class="tab-link" data-tab="original-source"><i class="fas fa-file-alt"></i> Fuente Original</span>
+    </div>
 
-  <h2>Response:</h2>
-  <div id="responseArea"></div>
+    <div id="preview" class="tab-content active">
+        <p><em>Intento de renderizar el HTML procesado. Se <strong>intenta ejecutar JavaScript</strong> (sandbox: <code>allow-scripts allow-same-origin</code>), pero puede fallar por CORS, errores de script, o complejidad del sitio. La apariencia puede diferir del original.</em></p>
+        <iframe id="previewFrame" sandbox="allow-scripts allow-forms allow-same-origin allow-pointer-lock allow-popups allow-presentation"></iframe>
+    </div>
 
-  <h2>Safety Ratings:</h2>
-  <div id="safetyRatings"></div>
+    <div id="processed-source" class="tab-content">
+        <p><em>Este es el código HTML <strong>modificado</strong>: se inyectó <code><base></code>, y se intentó reescribir URLs de CSS/Imágenes externas vía proxy. Los scripts <strong>se conservan</strong> pero sus URLs <strong>no</strong> se reescriben (para evitar romperlos). Este código se usa para la Vista Previa.</em></p>
+        <textarea id="processedHtmlOutput" readonly placeholder="Aquí aparecerá el código HTML procesado..."></textarea>
+        <div class="button-group">
+             <button id="copyProcessedButton" disabled>
+                <i class="fas fa-copy"></i> Copiar Fuente Procesada
+            </button>
+        </div>
+    </div>
 
-  <h2>Image:</h2>
-  <div id="imageDisplay">
-    <img id="generatedImage" src="" alt="Generated Image">
-  </div>
+     <div id="original-source" class="tab-content">
+        <p><em>Este es el código HTML <strong>exacto</strong> recibido desde la URL de destino (a través del proxy), sin ninguna modificación. Útil para diagnóstico si la versión procesada o la vista previa fallan.</em></p>
+        <textarea id="originalHtmlOutput" readonly placeholder="Aquí aparecerá el código HTML original sin procesar..."></textarea>
+         <div class="button-group">
+             <button id="copyOriginalButton" disabled>
+                <i class="fas fa-copy"></i> Copiar Fuente Original
+            </button>
+        </div>
+    </div>
 
-  <script>
-    // Function to load the API key from localStorage
-    function loadApiKey() {
-        return localStorage.getItem('geminiApiKey') || '';
-    }
+</div>
 
-    // Function to save the API key to localStorage
-    function saveApiKey(apiKey) {
-        localStorage.setItem('geminiApiKey', apiKey);
-    }
+<script>
+    const urlInput = document.getElementById('urlInput');
+    const fetchButton = document.getElementById('fetchButton');
+    const copyProcessedButton = document.getElementById('copyProcessedButton');
+    const copyOriginalButton = document.getElementById('copyOriginalButton');
+    const processedHtmlOutput = document.getElementById('processedHtmlOutput');
+    const originalHtmlOutput = document.getElementById('originalHtmlOutput');
+    const previewFrame = document.getElementById('previewFrame');
+    const statusDiv = document.getElementById('status');
+    const loader = document.getElementById('loader');
+    const tabs = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+    const fetchButtonTextNode = fetchButton.childNodes[2]; // Node " Obtener HTML"
 
-    const apiKeyInputContainer = document.getElementById("apiKeyInputContainer");
-    const apiKeyInput = document.getElementById("apiKeyInput");
-    const saveApiKeyButton = document.getElementById("saveApiKeyButton");
-    const generateButton = document.getElementById("generateButton");
-    const promptInput = document.getElementById("promptInput");
-    const responseArea = document.getElementById("responseArea");
-    const safetyRatingsDiv = document.getElementById("safetyRatings");
-    const loadingIndicator = document.getElementById("loadingIndicator");
-    const imageDisplay = document.getElementById("imageDisplay");  // Get the image display div
-    const generatedImage = document.getElementById("generatedImage"); // Get the image element
+    let rawOriginalHtml = '';
+    let processedHtml = '';
 
+    fetchButton.addEventListener('click', fetchAndProcessHtml);
+    copyProcessedButton.addEventListener('click', () => copyToClipboard(processedHtml, 'Fuente Procesada', copyProcessedButton));
+    copyOriginalButton.addEventListener('click', () => copyToClipboard(rawOriginalHtml, 'Fuente Original', copyOriginalButton));
 
-    let apiKey = loadApiKey(); // Load the API key on page load
-    apiKeyInput.value = apiKey; // Populate the input field
-
-    saveApiKeyButton.addEventListener("click", () => {
-        apiKey = apiKeyInput.value;
-        saveApiKey(apiKey);
-        alert("API Key saved! Remember to refresh the page if it doesn't work right away.");
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => switchTab(tab.dataset.tab));
     });
 
+     urlInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            fetchButton.click();
+        }
+    });
+
+    function setButtonState(button, text, disabled) {
+        const textNode = Array.from(button.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+        if (textNode) {
+            textNode.nodeValue = ` ${text}`; // Add space for alignment
+        }
+        button.disabled = disabled;
+    }
+
+    function setUIToLoadingState(isLoading) {
+        fetchButton.disabled = isLoading;
+        copyProcessedButton.disabled = true; // Always disable copy buttons during load
+        copyOriginalButton.disabled = true;
+        loader.style.display = isLoading ? 'inline-block' : 'none';
+        fetchButtonTextNode.nodeValue = isLoading ? ' Obteniendo...' : ' Obtener HTML';
+         if (!isLoading) {
+             // Only enable copy buttons if there's content after loading finishes
+             copyProcessedButton.disabled = !processedHtml;
+             copyOriginalButton.disabled = !rawOriginalHtml;
+         }
+    }
+
+    function resetOutputs() {
+        processedHtml = '';
+        rawOriginalHtml = '';
+        processedHtmlOutput.value = '';
+        originalHtmlOutput.value = '';
+        previewFrame.removeAttribute('srcdoc');
+        previewFrame.src = 'about:blank';
+        setStatus('Listo para obtener URL.', 'info');
+    }
 
 
-    generateButton.addEventListener("click", async () => {
-      const prompt = promptInput.value;
-
-      if (!apiKey) {
-        alert("Please enter and save your API key.");
-        return;
-      }
-
-      if (!prompt) {
-        alert("Please enter a prompt.");
-        return;
-      }
-
-      responseArea.textContent = ""; // Clear previous response
-      safetyRatingsDiv.textContent = ""; // Clear previous safety ratings
-      //imageDisplay.style.display = "none"; // NO - We will control display only when needed.
-      generatedImage.src = ""; // Clear the previous image URL
-      loadingIndicator.style.display = "block"; // Show loading indicator
-
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              contents: [{ parts: [{ text: prompt }] }],
-            }),
-          }
-        );
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(`API Error: ${response.status} - ${errorData.error.message}`);
+    async function fetchAndProcessHtml() {
+        const targetUrl = urlInput.value.trim();
+        if (!isValidUrl(targetUrl)) {
+            setStatus('URL inválida. Asegúrate que incluya http:// o https:// y un dominio.', 'error');
+            return;
         }
 
-        const data = await response.json();
-        console.log("API Response:", data); // Log the raw response for debugging
+        resetOutputs(); // Clear previous results
+        setUIToLoadingState(true);
+        setStatus('Iniciando proceso...', 'info');
 
-        let generatedText = "No response received."; // Default in case of errors
+        const proxyUrl = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
 
-        if (data.candidates && data.candidates.length > 0 && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts.length > 0) {
-          generatedText = data.candidates[0].content.parts[0].text;
-
-          // Display safety ratings
-          const safetyRatings = data.candidates[0].safetyRatings;
-          if (safetyRatings && safetyRatings.length > 0) {
-            safetyRatings.forEach(rating => {
-              const ratingDiv = document.createElement("div");
-              ratingDiv.classList.add("safety-rating");
-              ratingDiv.innerHTML = `<span class="safety-category">${rating.category}:</span> ${rating.probability}`;
-              safetyRatingsDiv.appendChild(ratingDiv);
+        try {
+            setStatus('1/5: Contactando proxy para obtener HTML...', 'info');
+            const response = await fetch(proxyUrl, {
+                 headers: {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Safari/537.36' // More modern UA
+                 },
+                 mode: 'cors' // Explicitly set mode
             });
-          } else {
-            safetyRatingsDiv.textContent = "No safety ratings available.";
-          }
 
-        } else {
-          generatedText = "Error: Could not extract text from the API response.  Check the console for the full response.";
-          safetyRatingsDiv.textContent = "Error: Could not extract safety ratings."; // Also clear safety ratings if text extraction fails
-          imageDisplay.style.display = "none";  // Hide image on text extraction error
+            setStatus('2/5: Analizando respuesta del proxy...', 'info');
+            if (!response.ok) {
+                 let errorText = `Error ${response.status} (${response.statusText})`;
+                 try {
+                     const errorContent = await response.text();
+                     if (errorContent && errorContent.length < 500) { // Show brief errors from proxy/site
+                          errorText += `: ${errorContent.substring(0, 150)}${errorContent.length > 150 ? '...' : ''}`;
+                     } else if (response.status === 403) {
+                         errorText += ' - Acceso Prohibido (el sitio o el proxy pueden estar bloqueando).';
+                     } else if (response.status === 503) {
+                         errorText += ' - Servicio No Disponible (el sitio o el proxy pueden estar caídos/ocupados).';
+                     } else if (response.status === 429) {
+                         errorText += ' - Demasiadas Peticiones (límite de tasa del proxy/sitio alcanzado).';
+                     }
+                 } catch(e) { /* Ignore if reading text fails */ }
+                throw new Error(`${errorText}. Posibles causas: URL incorrecta, sitio caído, bloqueo por CORS/seguridad, proxy fallando.`);
+            }
 
+            rawOriginalHtml = await response.text();
+             // Update UI immediately with original HTML
+             requestAnimationFrame(() => {
+                 originalHtmlOutput.value = rawOriginalHtml;
+                 copyOriginalButton.disabled = false;
+             });
+
+            setStatus('3/5: Procesando HTML (inyectando <base>)...', 'info');
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(rawOriginalHtml, 'text/html');
+
+
+            const effectiveBaseUrl = targetUrl; // Use the original URL as base
+            const existingBase = doc.querySelector('head base');
+            if (existingBase) existingBase.remove();
+            const baseTag = doc.createElement('base');
+            baseTag.setAttribute('href', effectiveBaseUrl);
+            doc.head.insertBefore(baseTag, doc.head.firstChild);
+
+            setStatus('4/5: Reescribiendo URLs relativas (CSS/Imágenes vía proxy)...', 'info');
+            let rewriteCount = { css: 0, img: 0, skipped_js: 0 };
+
+
+            doc.querySelectorAll('link[rel="stylesheet"][href]').forEach(link => {
+                try {
+                    const originalHref = link.getAttribute('href');
+                    if (originalHref && !originalHref.startsWith('data:') && !originalHref.startsWith('#') && !originalHref.startsWith('blob:')) {
+                        const absoluteUrl = new URL(originalHref, effectiveBaseUrl).href;
+                        if (absoluteUrl.startsWith('http') && !absoluteUrl.startsWith(window.location.origin)) { // Only proxy external URLs
+                            link.setAttribute('href', `https://corsproxy.io/?${encodeURIComponent(absoluteUrl)}`);
+                            rewriteCount.css++;
+                        }
+                    }
+                } catch (e) { console.warn(`Fallo al reescribir CSS Href: ${link.getAttribute('href')}`, e); }
+            });
+
+
+            doc.querySelectorAll('img[src], source[srcset]').forEach(el => {
+                 try {
+                    const originalSrc = el.getAttribute('src');
+                    if (originalSrc && !originalSrc.startsWith('data:') && !originalSrc.startsWith('#') && !originalSrc.startsWith('blob:')) {
+                        const absoluteUrl = new URL(originalSrc, effectiveBaseUrl).href;
+                        if (absoluteUrl.startsWith('http') && !absoluteUrl.startsWith(window.location.origin)) {
+                            el.setAttribute('src', `https://corsproxy.io/?${encodeURIComponent(absoluteUrl)}`);
+                            rewriteCount.img++;
+                        }
+                    }
+                 } catch (e) { console.warn(`Fallo al reescribir SRC: ${el.getAttribute('src')}`, e); }
+
+                 try {
+                     const originalSrcset = el.getAttribute('srcset');
+                     if(originalSrcset) {
+                         const urls = originalSrcset.split(',').map(part => part.trim().split(' ')[0]);
+                         let newSrcset = originalSrcset;
+                         let changed = false;
+                         urls.forEach(url => {
+                             if (url && !url.startsWith('data:') && !url.startsWith('#') && !url.startsWith('blob:')) {
+                                 const absoluteUrl = new URL(url, effectiveBaseUrl).href;
+                                 if (absoluteUrl.startsWith('http') && !absoluteUrl.startsWith(window.location.origin)) {
+                                     const proxiedUrl = `https://corsproxy.io/?${encodeURIComponent(absoluteUrl)}`;
+                                     newSrcset = newSrcset.replace(url, proxiedUrl);
+                                     changed = true;
+                                 }
+                             }
+                         });
+                         if (changed) {
+                              el.setAttribute('srcset', newSrcset);
+                              if (!el.hasAttribute('src') || !el.getAttribute('src')?.includes('corsproxy.io')) {
+                                  rewriteCount.img++; // Count unique elements proxied
+                              }
+                         }
+                     }
+                 } catch (e) { console.warn(`Fallo al reescribir SRCSET: ${el.getAttribute('srcset')}`, e); }
+            });
+
+            // Scripts: Conservar originales, no proxificar src para evitar romperlos.
+            doc.querySelectorAll('script[src]').forEach(() => {
+                 rewriteCount.skipped_js++;
+            });
+            console.log(`${rewriteCount.skipped_js} script(s) externos conservados con URL original.`);
+
+            processedHtml = doc.documentElement.outerHTML;
+
+            setStatus('5/5: Renderizando resultados...', 'info');
+            requestAnimationFrame(() => {
+                processedHtmlOutput.value = processedHtml;
+                previewFrame.srcdoc = processedHtml; // Usar srcdoc es más seguro y a menudo más rápido
+                copyProcessedButton.disabled = false;
+                setStatus(`¡Proceso completado! ${rewriteCount.css} CSS y ${rewriteCount.img} img/srcset proxificados. ${rewriteCount.skipped_js} scripts externos conservados.`, 'success');
+            });
+
+        } catch (error) {
+            console.error('Error detallado durante fetch/process:', error);
+            setStatus(`Error: ${error.message || 'Fallo desconocido'}`, 'error');
+            // Clear potentially partial results on error
+            processedHtmlOutput.value = `<!-- ERROR: ${error.message} -->`;
+            if (!rawOriginalHtml) { // If error happened before getting HTML
+                originalHtmlOutput.value = `<!-- ERROR: ${error.message} -->`;
+            }
+             requestAnimationFrame(() => {
+                 previewFrame.removeAttribute('srcdoc');
+                 previewFrame.src = 'about:blank';
+             });
+
+        } finally {
+             requestAnimationFrame(() => {
+                setUIToLoadingState(false); // Restore button states etc.
+             });
         }
+    }
 
 
-        responseArea.textContent = generatedText;
+    function switchTab(tabId) {
+        tabContents.forEach(content => content.classList.remove('active'));
+        tabs.forEach(tab => tab.classList.remove('active'));
 
-        // **Image Display Logic (Example)**
-        // This is a VERY BASIC example. You'll likely need a more
-        // sophisticated approach, such as using a search API based on the
-        // generated text or a generative image API.
+        const activeContent = document.getElementById(tabId);
+        const activeTabLink = document.querySelector(`.tab-link[data-tab="${tabId}"]`);
 
-        // For now, let's just show a placeholder image if the text
-        // contains the word "cat":
-        if (generatedText.toLowerCase().includes("cat")) {
-          generatedImage.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Domestic_Cat_Face_Shot.jpg/1200px-Domestic_Cat_Face_Shot.jpg";
-          generatedImage.alt = "Image of a Cat";
-          imageDisplay.style.display = "block"; // Show the image
-        } else if (generatedText.toLowerCase().includes("dog")) {
-          generatedImage.src = "https://www.akc.org/wp-content/uploads/2017/11/GettyImages-187072741.jpg";
-          generatedImage.alt = "Image of a Dog";
-          imageDisplay.style.display = "block"; // Show the image
-        } else {
-          imageDisplay.style.display = "none"; // Hide the image if no match
+        if (activeContent) activeContent.classList.add('active');
+        if (activeTabLink) activeTabLink.classList.add('active');
+    }
+
+    function copyToClipboard(textToCopy, sourceName, buttonElement) {
+        if (!textToCopy) {
+            setStatus(`No hay ${sourceName} para copiar.`, 'warning');
+            return;
         }
+        navigator.clipboard.writeText(textToCopy)
+            .then(() => {
+                setStatus(`¡${sourceName} copiada al portapapeles!`, 'success');
+                const originalText = Array.from(buttonElement.childNodes).find(node => node.nodeType === Node.TEXT_NODE)?.nodeValue || ` Copiar ${sourceName}`;
+                setButtonState(buttonElement, '¡Copiado!', true); // Disable temporarily
 
+                setTimeout(() => {
+                    setButtonState(buttonElement, originalText.trim(), false); // Re-enable
+                }, 2000);
+            })
+            .catch(err => {
+                console.error(`Error al copiar ${sourceName}:`, err);
+                setStatus(`Fallo al copiar ${sourceName}. Intenta manualmente.`, 'error');
+            });
+    }
 
-      } catch (error) {
-        console.error("Error:", error);
-        responseArea.textContent = `An error occurred: ${error.message}`;
-        safetyRatingsDiv.textContent = "";  // Clear safety ratings on error
-        imageDisplay.style.display = "none"; // Hide image on error
-      } finally {
-        loadingIndicator.style.display = "none"; // Hide loading indicator
-      }
-    });
-  </script>
+    function setStatus(message, type = 'info') {
+         // Debounce status updates slightly to prevent flickering rapid messages
+         if (window.statusTimeout) clearTimeout(window.statusTimeout);
+         window.statusTimeout = setTimeout(() => {
+             requestAnimationFrame(() => {
+                statusDiv.textContent = message;
+                statusDiv.className = 'status'; // Clear old classes first
+                statusDiv.classList.add(type); // Add the new type class
+                statusDiv.style.display = 'block'; // Make sure it's visible
+             });
+         }, 50); // 50ms delay
+    }
+
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return ['http:', 'https:'].includes(url.protocol) && url.hostname && url.hostname.includes('.'); // Basic check for a valid hostname
+        } catch (_) {
+            return false;
+        }
+    }
+
+    // Initial status
+    setStatus('Listo para obtener URL.', 'info');
+
+</script>
 
 </body>
 </html>
