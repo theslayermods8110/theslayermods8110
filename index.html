@@ -3,47 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Integrado Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <title>Panel Integrado Pro v3</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
-            --primary-purple: #8A2BE2;
-            --light-purple-hover: #a75af0;
-            --dark-bg: #181824;
-            --panel-bg: rgba(31, 31, 46, 0.9);
-            --content-bg: #1f1f2e;
-            --text-color: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --border-color: var(--primary-purple);
-            --border-radius-sml: 6px;
-            --box-shadow-color: rgba(138, 43, 226, 0.3);
-            --panel-width: 230px;
+            --primary-purple: #9333ea;
+            --light-purple-hover: #a855f7;
+            --dark-bg: #0c0c12;
+            --panel-bg: rgba(18, 18, 26, 0.96);
+            --content-bg: #14141c;
+            --text-color: #f5f5f5;
+            --text-secondary: #a8a8b8;
+            --border-color: rgba(147, 51, 234, 0.5);
+            --border-hover-color: var(--light-purple-hover);
+            --border-radius-sml: 10px;
+            --box-shadow-color: rgba(147, 51, 234, 0.18);
+            --box-shadow-hover-color: rgba(168, 85, 247, 0.3);
+            --box-shadow-inset: rgba(0, 0, 0, 0.3);
+            --glow-color: rgba(168, 85, 247, 0.45);
+            --panel-width: 265px;
+            --transition-speed-fast: 0.3s;
+            --transition-speed-med: 0.55s;
+            --transition-speed-slow: 0.75s;
+            --transition-speed-content: 0.6s;
+            --cubic-bezier-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+            --cubic-bezier-overshoot: cubic-bezier(0.34, 1.66, 0.64, 1);
+            --cubic-bezier-anticipate: cubic-bezier(0.6, -0.28, 0.74, 0.05);
+            --cubic-bezier-elastic: cubic-bezier(0.68, -0.65, 0.27, 1.65);
         }
+
+        @keyframes pulseBackground {
+            0%, 100% { background-color: var(--content-bg); }
+            50% { background-color: #1a1a24; }
+        }
+
+        @keyframes buttonPulseHover {
+             0%, 100% {
+                transform: scale(1) translateY(0);
+                box-shadow: 0 4px 9px var(--box-shadow-color), 0 0 6px var(--glow-color);
+                filter: brightness(1);
+             }
+             50% {
+                transform: scale(1.035) translateY(-3.5px);
+                box-shadow: 0 9px 18px var(--box-shadow-hover-color), 0 0 14px var(--glow-color);
+                filter: brightness(1.15);
+             }
+        }
+
+        @keyframes fadeInSlideUpElastic {
+            0% { opacity: 0; transform: translateY(40px) scale(0.94); }
+            60% { opacity: 1; transform: translateY(-7px) scale(1.025); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes cogSpinGlow {
+            0% { transform: rotate(0deg); text-shadow: 0 0 6px var(--primary-purple), 0 0 12px var(--primary-purple); }
+            50% { text-shadow: 0 0 9px var(--light-purple-hover), 0 0 18px var(--light-purple-hover), 0 0 4px white; }
+            100% { transform: rotate(180deg); text-shadow: 0 0 6px var(--primary-purple), 0 0 12px var(--primary-purple); }
+        }
+         @keyframes cogSpinBack {
+            0% { transform: rotate(180deg); text-shadow: 0 0 9px var(--light-purple-hover), 0 0 18px var(--light-purple-hover), 0 0 4px white; }
+            100% { transform: rotate(0deg); text-shadow: 0 0 6px var(--primary-purple), 0 0 12px var(--primary-purple); }
+        }
+
+        @keyframes iconPop {
+             0% { transform: scale(1); }
+             50% { transform: scale(1.3); }
+             100% { transform: scale(1.15); }
+        }
+        @keyframes textGlow {
+            0%, 100% { text-shadow: 0 0 2px rgba(245, 245, 245, 0.6); }
+            50% { text-shadow: 0 0 5px rgba(245, 245, 245, 0.9); }
+        }
+
+        @keyframes shuttleFly {
+            0% { transform: translateY(0px) translateX(0px) rotate(-2deg); }
+            25% { transform: translateY(-4px) translateX(3px) rotate(0deg); }
+            50% { transform: translateY(0px) translateX(0px) rotate(2deg); }
+            75% { transform: translateY(-4px) translateX(-3px) rotate(0deg); }
+            100% { transform: translateY(0px) translateX(0px) rotate(-2deg); }
+        }
+        @keyframes pointerBeat {
+             0%, 100% { transform: scale(1); opacity: 0.7; }
+             50% { transform: scale(1.15); opacity: 1; }
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Roboto', sans-serif; background-color: var(--dark-bg); color: var(--text-color); min-height: 100vh; line-height: 1.5; overflow-x: hidden; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.35); }
+        ::-webkit-scrollbar-thumb { background-color: var(--primary-purple); border-radius: 10px; border: 2px solid var(--dark-bg); }
+        ::-webkit-scrollbar-thumb:hover { background-color: var(--light-purple-hover); box-shadow: 0 0 6px var(--light-purple-hover); }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            min-height: 100vh;
+            line-height: 1.7;
+            overflow-x: hidden;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
 
         #menu-toggle {
             position: fixed;
-            top: 15px;
-            left: 15px;
+            top: 20px;
+            left: 20px;
             z-index: 1001;
-            background-color: var(--primary-purple);
+            background: linear-gradient(145deg, var(--primary-purple), var(--light-purple-hover));
             color: white;
             border: none;
-            padding: 8px 10px;
-            font-size: 1.2em;
+            padding: 12px 14px;
+            font-size: 1.4em;
             border-radius: var(--border-radius-sml);
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            transition: background-color 0.2s ease;
+            box-shadow: 0 5px 13px rgba(0,0,0,0.45), 0 0 10px var(--glow-color);
+            transition: transform var(--transition-speed-fast) var(--cubic-bezier-elastic),
+                        box-shadow var(--transition-speed-fast) ease,
+                        background var(--transition-speed-fast) ease;
+            will-change: transform, box-shadow;
         }
         #menu-toggle:hover {
-            background-color: var(--light-purple-hover);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(168, 85, 247, 0.45), 0 0 18px var(--glow-color);
+        }
+        #menu-toggle i.fa-cog {
+            display: block;
+            color: white;
+            text-shadow: 0 0 6px var(--primary-purple), 0 0 12px var(--primary-purple);
+            transition: text-shadow var(--transition-speed-fast) ease, transform var(--transition-speed-med) var(--cubic-bezier-smooth);
+            animation: cogSpinBack 0.65s var(--cubic-bezier-smooth) forwards;
+            will-change: transform, text-shadow;
+        }
+        #menu-toggle.icon-rotated i.fa-cog {
+             animation: cogSpinGlow 0.75s var(--cubic-bezier-elastic) forwards;
+        }
+        #menu-toggle:hover i.fa-cog {
+            text-shadow: 0 0 8px var(--light-purple-hover), 0 0 16px var(--light-purple-hover), 0 0 4px white;
+        }
+        #menu-toggle:active {
+            transform: scale(1.03);
+            box-shadow: 0 4px 9px rgba(0,0,0,0.35), 0 0 6px var(--glow-color);
         }
 
         #panel-navegacion {
@@ -53,176 +160,460 @@
             bottom: 0;
             width: var(--panel-width);
             background: var(--panel-bg);
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
             border-right: 1px solid var(--border-color);
-            box-shadow: 3px 0 15px var(--box-shadow-color);
+            box-shadow: 9px 0 35px var(--box-shadow-color);
             display: flex;
             flex-direction: column;
-            padding: 20px 15px;
+            padding: 80px 22px 35px 22px;
             overflow-y: auto;
+            overflow-x: hidden;
             z-index: 1000;
             transform: translateX(-100%);
-            transition: transform 0.3s ease-in-out;
+            transition: transform var(--transition-speed-slow) var(--cubic-bezier-elastic);
+            will-change: transform;
         }
-
         #panel-navegacion.panel-visible {
             transform: translateX(0);
         }
-
-        #panel-navegacion h2 {
-            font-family: 'Orbitron', sans-serif;
-            color: var(--primary-purple);
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 1.5em;
-            letter-spacing: 1px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(138, 43, 226, 0.5);
+        #panel-navegacion.panel-visible .boton-panel,
+        #panel-navegacion.panel-visible .panel-separator,
+        #panel-navegacion.panel-visible #boton-inicio {
+             animation: fadeInSlideUpElastic 0.85s var(--cubic-bezier-elastic) forwards;
+             opacity: 0;
+             will-change: opacity, transform;
         }
+        #panel-navegacion.panel-visible .boton-panel:nth-of-type(1) { animation-delay: 0.16s; }
+        #panel-navegacion.panel-visible .boton-panel:nth-of-type(2) { animation-delay: 0.23s; }
+        #panel-navegacion.panel-visible .boton-panel:nth-of-type(3) { animation-delay: 0.30s; }
+        #panel-navegacion.panel-visible .boton-panel:nth-of-type(4) { animation-delay: 0.37s; }
+        #panel-navegacion.panel-visible .panel-separator { animation-delay: 0.44s; }
+        #panel-navegacion.panel-visible #boton-inicio { animation-delay: 0.51s; }
 
         .boton-panel {
-            display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; margin-bottom: 10px; background-color: transparent; border: 1px solid var(--border-color); color: var(--text-color); font-size: 0.95em; text-align: left; border-radius: var(--border-radius-sml); cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease, transform 0.1s ease;
+            display: flex; align-items: center; gap: 16px;
+            width: 100%; padding: 15px 18px; margin-bottom: 18px; background-color: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: var(--text-color); font-size: 1.1em; font-weight: 400; text-align: left; border-radius: var(--border-radius-sml); cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        border-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        transform var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        box-shadow var(--transition-speed-fast) var(--cubic-bezier-smooth);
+            will-change: background-color, border-color, transform, box-shadow, color;
         }
-        .boton-panel i { width: 18px; text-align: center; color: var(--primary-purple); transition: color 0.2s ease; }
-        .boton-panel:hover { background-color: rgba(138, 43, 226, 0.1); border-color: var(--light-purple-hover); color: #fff; }
-        .boton-panel:hover i { color: var(--light-purple-hover); }
-        .boton-panel:active { transform: scale(0.98); background-color: rgba(138, 43, 226, 0.2); }
+        .boton-panel i {
+            flex-shrink: 0;
+            width: 24px; text-align: center; color: var(--primary-purple); font-size: 1.25em;
+            transition: color var(--transition-speed-fast) var(--cubic-bezier-smooth), transform var(--transition-speed-med) var(--cubic-bezier-elastic);
+            will-change: color, transform;
+        }
+        .boton-panel span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .boton-panel:hover {
+            background-color: rgba(147, 51, 234, 0.22);
+            border-color: var(--border-hover-color);
+            color: #fff;
+            animation: buttonPulseHover 1.1s ease-in-out infinite;
+        }
+        .boton-panel:hover i {
+            color: var(--light-purple-hover);
+            animation: iconPop 0.55s var(--cubic-bezier-elastic) forwards;
+        }
+         .boton-panel:hover span {
+            animation: textGlow 1.4s ease-in-out infinite;
+         }
+        .boton-panel:active {
+            transform: scale(0.95) translateY(1.5px);
+            background-color: rgba(147, 51, 234, 0.35);
+            box-shadow: inset 0 2px 6px var(--box-shadow-inset);
+            animation: none;
+        }
+         .boton-panel:active i, .boton-panel:active span {
+             animation: none;
+         }
 
-        #boton-inicio { margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(138, 43, 226, 0.3); }
-        #boton-inicio button { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 9px 12px; background-color: var(--content-bg); border: 1px solid var(--text-secondary); color: var(--text-secondary); font-size: 0.9em; border-radius: var(--border-radius-sml); cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
-        #boton-inicio button i { color: var(--text-secondary); transition: color 0.2s ease; }
-        #boton-inicio button:hover { background-color: rgba(255, 255, 255, 0.05); border-color: var(--text-color); color: var(--text-color); }
-        #boton-inicio button:hover i { color: var(--text-color); }
+        .panel-separator {
+             height: 1px;
+             background-color: rgba(147, 51, 234, 0.35);
+             margin: 5px 0 25px 0;
+             opacity: 0;
+             border: none;
+        }
+
+        #boton-inicio {
+            margin-top: auto; padding-top: 20px;
+            opacity: 0;
+        }
+        #boton-inicio button {
+            display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 13px 15px; background-color: rgba(31, 31, 46, 0.9); border: 1px solid var(--text-secondary); color: var(--text-secondary); font-size: 1.04em; border-radius: var(--border-radius-sml); cursor: pointer;
+            transition: background-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        border-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        color var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        transform var(--transition-speed-fast) var(--cubic-bezier-smooth),
+                        box-shadow var(--transition-speed-fast) var(--cubic-bezier-smooth);
+             will-change: background-color, border-color, color, transform, box-shadow;
+        }
+        #boton-inicio button i { flex-shrink: 0; color: var(--text-secondary); transition: color var(--transition-speed-fast) var(--cubic-bezier-smooth), transform var(--transition-speed-med) var(--cubic-bezier-elastic); will-change: color, transform; }
+        #boton-inicio button span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap;}
+        #boton-inicio button:hover {
+            background-color: rgba(255, 255, 255, 0.18);
+            border-color: var(--text-color);
+            color: var(--text-color);
+            animation: buttonPulseHover 1.1s ease-in-out infinite;
+        }
+        #boton-inicio button:hover i { color: var(--text-color); animation: iconPop 0.55s var(--cubic-bezier-elastic) forwards; }
+        #boton-inicio button:hover span { animation: textGlow 1.4s ease-in-out infinite; }
+        #boton-inicio button:active {
+            transform: scale(0.95) translateY(1.5px);
+            box-shadow: inset 0 2px 6px var(--box-shadow-inset);
+            animation: none;
+        }
+         #boton-inicio button:active i, #boton-inicio button:active span {
+             animation: none;
+         }
 
         #area-contenido {
             width: 100%;
             min-height: 100vh;
-            background-color: var(--content-bg);
+            background: radial-gradient(circle, var(--content-bg) 0%, var(--dark-bg) 100%);
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+            animation: pulseBackground 13s ease-in-out infinite alternate;
         }
-        #texto-inicial { color: var(--text-secondary); font-style: italic; text-align: center; padding: 20px; }
-        #iframe-contenido { width: 100%; height: 100vh; border: none; display: none; background-color: var(--dark-bg); }
+
+        #texto-inicial, #iframe-contenido {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
+                        visibility 0s linear,
+                        transform var(--transition-speed-content) var(--cubic-bezier-anticipate);
+             width: 100%;
+             height: 100%;
+             position: absolute;
+             top: 0;
+             left: 0;
+             transform: scale(1) translateY(0);
+             will-change: opacity, transform;
+        }
+         #texto-inicial.content-hidden,
+        #iframe-contenido.content-hidden {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
+                        visibility 0s linear var(--transition-speed-content),
+                        transform var(--transition-speed-content) var(--cubic-bezier-anticipate);
+            pointer-events: none;
+            transform: scale(0.94) translateY(25px);
+        }
+        #iframe-contenido.content-hidden {
+            transform: scale(0.94) translateY(-25px);
+        }
+         #texto-inicial:not(.content-hidden) {
+            transform: scale(1) translateY(0);
+            transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
+                        visibility 0s 0s,
+                        transform var(--transition-speed-content) var(--cubic-bezier-overshoot);
+        }
+        #iframe-contenido:not(.content-hidden) {
+             transform: scale(1) translateY(0);
+             transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
+                         visibility 0s 0s,
+                         transform var(--transition-speed-content) var(--cubic-bezier-overshoot);
+        }
+
+        #iframe-contenido {
+            border: none;
+            background-color: var(--dark-bg);
+            width: 100%;
+            height: 100%;
+        }
+        #texto-inicial {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 30px;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 1.2em;
+        }
+        #texto-inicial span {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+         #texto-inicial i {
+             color: var(--primary-purple);
+             font-size: 1.3em;
+             filter: drop-shadow(0 0 5px var(--glow-color));
+         }
+         #texto-inicial .main-icon {
+            font-size: 4.2em;
+            margin-bottom: 30px;
+            opacity: 0.8;
+            color: var(--primary-purple);
+            filter: drop-shadow(0 0 12px var(--glow-color));
+            animation: shuttleFly 4s ease-in-out infinite;
+         }
+         #texto-inicial .fa-hand-pointer {
+             animation: pointerBeat 1.4s ease-in-out infinite;
+         }
+
+         @media (max-width: 768px) {
+            :root {
+                 --panel-width: 240px;
+            }
+             #panel-navegacion {
+                 padding: 70px 18px 30px 18px;
+             }
+            .boton-panel {
+                padding: 12px 15px;
+                gap: 12px;
+                font-size: 1em;
+            }
+             #boton-inicio button {
+                 padding: 11px 13px;
+                 font-size: 1em;
+                 gap: 10px;
+             }
+             #texto-inicial {
+                 font-size: 1.1em;
+             }
+             #texto-inicial .main-icon {
+                 font-size: 3.5em;
+             }
+         }
+          @media (max-width: 480px) {
+             #menu-toggle {
+                 top: 15px;
+                 left: 15px;
+                 padding: 10px 12px;
+                 font-size: 1.3em;
+             }
+             #panel-navegacion {
+                 width: 100%;
+                 border-right: none;
+                 box-shadow: 0 9px 35px var(--box-shadow-color);
+             }
+         }
 
     </style>
 </head>
 <body>
-
-    <button id="menu-toggle" title="Mostrar/Ocultar Panel">
-        <i class="fas fa-bars"></i>
+    <button id="menu-toggle" title="Mostrar/Ocultar Panel" aria-label="Toggle Navigation Menu" aria-controls="panel-navegacion" aria-expanded="false">
+        <i class="fas fa-cog" aria-hidden="true"></i>
     </button>
-
     <div class="contenedor-principal">
-
-        <div id="panel-navegacion">
-            <h2><i class="fas fa-compass"></i> Panel</h2>
-
-            <button class="boton-panel" data-url="https://slayer666.vercel.app/">
-                <i class="fas fa-tools fa-fw"></i>
-                TOOLS PRO
+        <nav id="panel-navegacion" role="navigation" aria-hidden="true">
+            <button class="boton-panel" data-url="#">
+                <i class="fas fa-rocket fa-fw" aria-hidden="true"></i>
+                <span>TEXTO</span>
             </button>
-            <button class="boton-panel" data-url="https://a-two-indol.vercel.app/#dashboard">
-                <i class="fas fa-cube fa-fw"></i>
-                MINECRAFT
+            <button class="boton-panel" data-url="#">
+                <i class="fas fa-rocket fa-fw" aria-hidden="true"></i>
+                <span>TEXTO</span>
             </button>
-            <!-- NUEVO BOTÓN AGREGADO AQUÍ -->
-            <button class="boton-panel" data-url="https://slayer888.vercel.app/">
-                <i class="fas fa-magic fa-fw"></i> <!-- Icono cambiado a 'fa-magic' como ejemplo -->
-                nchanter pro
+            <button class="boton-panel" data-url="#">
+                <i class="fas fa-rocket fa-fw" aria-hidden="true"></i>
+                <span>TEXTO</span>
             </button>
-            <!-- FIN DEL NUEVO BOTÓN -->
-            <button class="boton-panel" data-url="https://www.google.com/search?igu=1">
-                 <i class="fas fa-search fa-fw"></i>
-                 BÚSQUEDA
+            <button class="boton-panel" data-url="#">
+                 <i class="fas fa-rocket fa-fw" aria-hidden="true"></i>
+                 <span>TEXTO</span>
             </button>
-
+             <hr class="panel-separator">
             <div id="boton-inicio">
-                 <button title="Limpiar contenido y volver al inicio">
-                     <i class="fas fa-trash-alt"></i> Limpiar
+                 <button title="Limpiar contenido y volver al inicio" aria-label="Clear content and return home">
+                     <i class="fas fa-broom" aria-hidden="true"></i> <span>Limpiar</span>
                  </button>
             </div>
-        </div>
-
-        <div id="area-contenido">
-            <p id="texto-inicial">
-                <i class="fas fa-hand-pointer"></i> Haz clic en el icono <i class="fas fa-bars"></i> para abrir el panel.
-            </p>
-            <iframe id="iframe-contenido" src="about:blank" frameborder="0" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-presentation">
-                Tu navegador no soporta iframes o el contenido está bloqueado.
+        </nav>
+        <main id="area-contenido" role="main">
+            <div id="texto-inicial">
+                 <i class="fas fa-space-shuttle main-icon" aria-hidden="true"></i>
+                <span>
+                  <i class="fas fa-hand-pointer" aria-hidden="true"></i> Haz clic en el icono <i class="fas fa-cog" aria-hidden="true"></i> para desplegar magia.
+                </span>
+            </div>
+            <iframe id="iframe-contenido" src="about:blank" title="Contenido Cargado" class="content-hidden" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-presentation" loading="eager">
             </iframe>
-        </div>
+        </main>
     </div>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('menu-toggle');
             const panelNavegacion = document.getElementById('panel-navegacion');
-            const botonesPanel = document.querySelectorAll('.boton-panel');
+            const botonesPanel = panelNavegacion.querySelectorAll('.boton-panel');
             const iframeContenido = document.getElementById('iframe-contenido');
             const textoInicial = document.getElementById('texto-inicial');
             const botonLimpiar = document.querySelector('#boton-inicio button');
+            const contentArea = document.getElementById('area-contenido');
+
+            if (!menuToggle || !panelNavegacion || !iframeContenido || !textoInicial || !botonLimpiar || !contentArea) {
+                return;
+            }
+
+            const transitionDurationCSS = getComputedStyle(document.documentElement).getPropertyValue('--transition-speed-content');
+            const transitionDuration = parseFloat(transitionDurationCSS) * 1000 || 600;
+
+            let isPanelActionInProgress = false;
+            let panelTransitionTimeout;
+            let contentTransitionTimeout;
+
+            function handleTransitionEnd(element, callback) {
+                if (element === panelNavegacion) {
+                    clearTimeout(panelTransitionTimeout);
+                }
+
+                let ended = false;
+                const specificTransitionDuration = parseFloat(getComputedStyle(element).transitionDuration) * 1000 || 750;
+
+                const onEnd = (event) => {
+                    if (event.target === element && !ended) {
+                        ended = true;
+                        element.removeEventListener('transitionend', onEnd);
+                        if (element === panelNavegacion) {
+                             isPanelActionInProgress = false;
+                             clearTimeout(panelTransitionTimeout);
+                         }
+                        if (callback) callback();
+                    }
+                };
+                element.addEventListener('transitionend', onEnd);
+
+                 if (element === panelNavegacion) {
+                     panelTransitionTimeout = setTimeout(() => {
+                         if (!ended) {
+                             ended = true;
+                             element.removeEventListener('transitionend', onEnd);
+                             isPanelActionInProgress = false;
+                             if (callback) callback();
+                         }
+                     }, specificTransitionDuration + 100);
+                 }
+            }
+
 
             function mostrarPanel() {
-                panelNavegacion.classList.add('panel-visible');
+                if (isPanelActionInProgress || panelNavegacion.classList.contains('panel-visible')) return;
+                isPanelActionInProgress = true;
+                panelNavegacion.style.display = 'flex';
+                requestAnimationFrame(() => {
+                    panelNavegacion.classList.add('panel-visible');
+                    panelNavegacion.setAttribute('aria-hidden', 'false');
+                    menuToggle.classList.add('icon-rotated');
+                    menuToggle.setAttribute('aria-expanded', 'true');
+                });
+                handleTransitionEnd(panelNavegacion);
             }
 
             function ocultarPanel() {
-                panelNavegacion.classList.remove('panel-visible');
+                 if (isPanelActionInProgress || !panelNavegacion.classList.contains('panel-visible')) return;
+                 isPanelActionInProgress = true;
+                 panelNavegacion.classList.remove('panel-visible');
+                 panelNavegacion.setAttribute('aria-hidden', 'true');
+                 menuToggle.classList.remove('icon-rotated');
+                 menuToggle.setAttribute('aria-expanded', 'false');
+                 handleTransitionEnd(panelNavegacion, () => {
+                    if (!panelNavegacion.classList.contains('panel-visible')) {
+                       requestAnimationFrame(() => {
+                          /* panelNavegacion.style.display = 'none'; // Consider removing this line entirely if flex/transform handles hiding well */
+                       });
+                    }
+                 });
             }
 
             function togglePanel() {
-                panelNavegacion.classList.toggle('panel-visible');
-            }
-
-            function cargarUrlEnIframe(url) {
-                if (url) {
-                    textoInicial.style.display = 'none';
-                    iframeContenido.style.display = 'block';
-                    iframeContenido.src = url;
-                    console.log("Intentando cargar URL:", url);
+                const isVisible = panelNavegacion.classList.contains('panel-visible');
+                if (isVisible) {
                     ocultarPanel();
+                } else {
+                    mostrarPanel();
                 }
             }
 
-            function volverAlInicio() {
-                iframeContenido.src = 'about:blank';
-                iframeContenido.style.display = 'none';
-                textoInicial.style.display = 'block';
-                console.log("Volviendo al inicio.");
+            function cargarUrlEnIframe(url) {
                 ocultarPanel();
+                clearTimeout(contentTransitionTimeout);
+
+                if (url && url !== "#") {
+                    if (!textoInicial.classList.contains('content-hidden')) {
+                        textoInicial.classList.add('content-hidden');
+                    }
+                    if (!iframeContenido.classList.contains('content-hidden')) {
+                         iframeContenido.classList.add('content-hidden');
+                    }
+
+
+                    contentTransitionTimeout = setTimeout(() => {
+                        try {
+                            iframeContenido.src = url;
+                             requestAnimationFrame(() => {
+                                iframeContenido.classList.remove('content-hidden');
+                            });
+                        } catch (e) {
+                            volverAlInicio(true);
+                        }
+                    }, transitionDuration * 0.5);
+
+                } else {
+                     if (!iframeContenido.classList.contains('content-hidden')) {
+                        volverAlInicio(false);
+                     }
+                }
             }
 
-            if (menuToggle) {
-                menuToggle.addEventListener('click', togglePanel);
-            } else {
-                console.error("No se encontró el botón #menu-toggle.");
+            function volverAlInicio(forceHidePanel = true) {
+                 if (forceHidePanel) {
+                     ocultarPanel();
+                 }
+                if (!textoInicial.classList.contains('content-hidden')) return;
+
+                clearTimeout(contentTransitionTimeout);
+                iframeContenido.classList.add('content-hidden');
+
+                 contentTransitionTimeout = setTimeout(() => {
+                     if (iframeContenido.classList.contains('content-hidden')) {
+                         try {
+                             iframeContenido.src = 'about:blank';
+                          } catch (e) { /* Ignore potential cleanup error */ }
+                     }
+                     requestAnimationFrame(() => {
+                        textoInicial.classList.remove('content-hidden');
+                     });
+                 }, transitionDuration * 0.5);
             }
+
+            menuToggle.addEventListener('click', togglePanel);
 
             botonesPanel.forEach(boton => {
                 boton.addEventListener('click', () => {
-                    const url = boton.getAttribute('data-url');
-                    if (!url || url === "#" || url === "") {
-                         console.warn("Botón clickeado sin URL válida:", boton.textContent.trim());
-                         ocultarPanel();
-                         return;
-                    }
+                    const url = boton.dataset.url;
                     cargarUrlEnIframe(url);
                 });
             });
 
-            if (botonLimpiar) {
-                botonLimpiar.addEventListener('click', volverAlInicio);
-            } else {
-                 console.error("No se encontró el botón de limpiar.");
-            }
+            botonLimpiar.addEventListener('click', () => volverAlInicio(true));
 
-            volverAlInicio();
-            ocultarPanel();
+
+            requestAnimationFrame(() => {
+                textoInicial.classList.remove('content-hidden');
+                iframeContenido.classList.add('content-hidden');
+                try { iframeContenido.src = 'about:blank'; } catch (e) { /* Ignore */ }
+                panelNavegacion.setAttribute('aria-hidden', 'true');
+                menuToggle.setAttribute('aria-expanded', 'false');
+                panelNavegacion.classList.remove('panel-visible');
+            });
+
         });
     </script>
-
 </body>
 </html>
