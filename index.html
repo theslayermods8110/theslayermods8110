@@ -16,7 +16,7 @@
             --light-purple-hover: #a855f7;
             --dark-bg: #0c0c12;
             --panel-bg: rgba(18, 18, 26, 0.96);
-            --content-bg: #14141c;
+            --content-bg-fallback: #14141c;
             --text-color: #f5f5f5;
             --text-secondary: #a8a8b8;
             --border-color: rgba(147, 51, 234, 0.5);
@@ -35,11 +35,6 @@
             --cubic-bezier-overshoot: cubic-bezier(0.34, 1.66, 0.64, 1);
             --cubic-bezier-anticipate: cubic-bezier(0.6, -0.28, 0.74, 0.05);
             --cubic-bezier-elastic: cubic-bezier(0.68, -0.65, 0.27, 1.65);
-        }
-
-        @keyframes pulseBackground {
-            0%, 100% { background-color: var(--content-bg); }
-            50% { background-color: #1a1a24; }
         }
 
         @keyframes buttonPulseHover {
@@ -100,16 +95,34 @@
         ::-webkit-scrollbar-thumb { background-color: var(--primary-purple); border-radius: 10px; border: 2px solid var(--dark-bg); }
         ::-webkit-scrollbar-thumb:hover { background-color: var(--light-purple-hover); box-shadow: 0 0 6px var(--light-purple-hover); }
 
+        html {
+            height: 100%;
+        }
+
         body {
             font-family: 'Roboto', sans-serif;
             background-color: var(--dark-bg);
+            background-image: url('https://i.ibb.co/5gLM1q6V/R-8.jpg');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
             color: var(--text-color);
             min-height: 100vh;
             line-height: 1.7;
             overflow-x: hidden;
             position: relative;
+            display: flex;
+            flex-direction: column;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+
+        .contenedor-principal {
+            flex-grow: 1;
+            display: flex;
+            position: relative;
+            min-height: 100vh;
         }
 
         #menu-toggle {
@@ -188,12 +201,13 @@
         #panel-navegacion.panel-visible .boton-panel:nth-of-type(2) { animation-delay: 0.23s; }
         #panel-navegacion.panel-visible .boton-panel:nth-of-type(3) { animation-delay: 0.30s; }
         #panel-navegacion.panel-visible .boton-panel:nth-of-type(4) { animation-delay: 0.37s; }
-        #panel-navegacion.panel-visible .panel-separator { animation-delay: 0.44s; }
-        #panel-navegacion.panel-visible #boton-inicio { animation-delay: 0.51s; }
+        #panel-navegacion.panel-visible .boton-panel:nth-of-type(5) { animation-delay: 0.44s; }
+        #panel-navegacion.panel-visible .panel-separator { animation-delay: 0.51s; }
+        #panel-navegacion.panel-visible #boton-inicio { animation-delay: 0.58s; }
 
         .boton-panel {
             display: flex; align-items: center; gap: 16px;
-            width: 100%; padding: 15px 18px; margin-bottom: 18px; background-color: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: var(--text-color); font-size: 1.1em; font-weight: 400; text-align: left; border-radius: var(--border-radius-sml); cursor: pointer;
+            width: 100%; padding: 15px 18px; margin-bottom: 18px; background-color: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: var(--text-color); font-size: 1.1em; font-weight: 400; text-align: left; border-radius: var(--border-radius-sml); cursor: pointer; text-decoration: none;
             transition: background-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
                         border-color var(--transition-speed-fast) var(--cubic-bezier-smooth),
                         color var(--transition-speed-fast) var(--cubic-bezier-smooth),
@@ -276,74 +290,85 @@
          }
 
         #area-contenido {
+            flex-grow: 1;
             width: 100%;
             min-height: 100vh;
-            background: radial-gradient(circle, var(--content-bg) 0%, var(--dark-bg) 100%);
+            background-color: transparent;
             overflow: hidden;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            animation: pulseBackground 13s ease-in-out infinite alternate;
+            padding: 20px;
         }
 
         #texto-inicial, #iframe-contenido {
-            opacity: 1;
-            visibility: visible;
             transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
                         visibility 0s linear,
                         transform var(--transition-speed-content) var(--cubic-bezier-anticipate);
-             width: 100%;
-             height: 100%;
-             position: absolute;
-             top: 0;
-             left: 0;
-             transform: scale(1) translateY(0);
-             will-change: opacity, transform;
-        }
-         #texto-inicial.content-hidden,
-        #iframe-contenido.content-hidden {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            transform: scale(1) translateY(0);
+            will-change: opacity, transform;
+            background-color: transparent;
             opacity: 0;
             visibility: hidden;
-            transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
-                        visibility 0s linear var(--transition-speed-content),
-                        transform var(--transition-speed-content) var(--cubic-bezier-anticipate);
             pointer-events: none;
-            transform: scale(0.94) translateY(25px);
         }
-        #iframe-contenido.content-hidden {
-            transform: scale(0.94) translateY(-25px);
-        }
-         #texto-inicial:not(.content-hidden) {
+
+         #texto-inicial.content-visible,
+         #iframe-contenido.content-visible {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
             transform: scale(1) translateY(0);
             transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
                         visibility 0s 0s,
                         transform var(--transition-speed-content) var(--cubic-bezier-overshoot);
-        }
-        #iframe-contenido:not(.content-hidden) {
-             transform: scale(1) translateY(0);
-             transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
-                         visibility 0s 0s,
-                         transform var(--transition-speed-content) var(--cubic-bezier-overshoot);
+         }
+
+         #texto-inicial.content-hiding,
+         #iframe-contenido.content-hiding {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity var(--transition-speed-content) var(--cubic-bezier-smooth),
+                        visibility 0s linear var(--transition-speed-content),
+                        transform var(--transition-speed-content) var(--cubic-bezier-anticipate);
+            transform: scale(0.94) translateY(25px);
+         }
+        #iframe-contenido.content-hiding {
+            transform: scale(0.94) translateY(-25px);
         }
 
-        #iframe-contenido {
-            border: none;
-            background-color: var(--dark-bg);
-            width: 100%;
-            height: 100%;
-        }
-        #texto-inicial {
+        #texto-inicial.content-visible {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
             padding: 30px;
-            color: var(--text-secondary);
-            font-style: italic;
+            color: var(--text-color);
+            font-style: normal;
             font-size: 1.2em;
+            background-color: rgba(12, 12, 18, 0.85);
+            border-radius: var(--border-radius-sml);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            position: relative;
+            max-width: 600px;
+            width: 90%;
+            height: auto;
         }
+
+        #iframe-contenido.content-visible {
+             background-color: var(--dark-bg);
+             border: none;
+        }
+
         #texto-inicial span {
             display: inline-flex;
             align-items: center;
@@ -354,6 +379,7 @@
              color: var(--primary-purple);
              font-size: 1.3em;
              filter: drop-shadow(0 0 5px var(--glow-color));
+             text-shadow: none;
          }
          #texto-inicial .main-icon {
             font-size: 4.2em;
@@ -362,6 +388,7 @@
             color: var(--primary-purple);
             filter: drop-shadow(0 0 12px var(--glow-color));
             animation: shuttleFly 4s ease-in-out infinite;
+            text-shadow: none;
          }
          #texto-inicial .fa-hand-pointer {
              animation: pointerBeat 1.4s ease-in-out infinite;
@@ -384,8 +411,9 @@
                  font-size: 1em;
                  gap: 10px;
              }
-             #texto-inicial {
+             #texto-inicial.content-visible {
                  font-size: 1.1em;
+                 max-width: 90%;
              }
              #texto-inicial .main-icon {
                  font-size: 3.5em;
@@ -402,6 +430,18 @@
                  width: 100%;
                  border-right: none;
                  box-shadow: 0 9px 35px var(--box-shadow-color);
+             }
+             #texto-inicial.content-visible {
+                max-width: 95%;
+                padding: 20px;
+                font-size: 1em;
+             }
+             #texto-inicial .main-icon {
+                 font-size: 3em;
+                 margin-bottom: 20px;
+             }
+             #texto-inicial i {
+                font-size: 1.2em;
              }
          }
 
@@ -429,6 +469,10 @@
                  <i class="fas fa-rocket fa-fw" aria-hidden="true"></i>
                  <span>TEXTO</span>
             </button>
+            <a href="https://youtube.com/@lobodios7341?si=Lw-TiIaQ7m7dLnyY" target="_blank" rel="noopener noreferrer" class="boton-panel" title="Visita mi canal de YouTube">
+                 <i class="fab fa-youtube fa-fw" aria-hidden="true"></i>
+                 <span>LoboDios7341</span>
+            </a>
              <hr class="panel-separator">
             <div id="boton-inicio">
                  <button title="Limpiar contenido y volver al inicio" aria-label="Clear content and return home">
@@ -443,7 +487,7 @@
                   <i class="fas fa-hand-pointer" aria-hidden="true"></i> Haz clic en el icono <i class="fas fa-cog" aria-hidden="true"></i> para desplegar magia.
                 </span>
             </div>
-            <iframe id="iframe-contenido" src="about:blank" title="Contenido Cargado" class="content-hidden" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-presentation" loading="eager">
+            <iframe id="iframe-contenido" src="about:blank" title="Contenido Cargado" sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-presentation" loading="eager">
             </iframe>
         </main>
     </div>
@@ -451,7 +495,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             const menuToggle = document.getElementById('menu-toggle');
             const panelNavegacion = document.getElementById('panel-navegacion');
-            const botonesPanel = panelNavegacion.querySelectorAll('.boton-panel');
+            const botonesPanel = panelNavegacion.querySelectorAll('.boton-panel[data-url]');
             const iframeContenido = document.getElementById('iframe-contenido');
             const textoInicial = document.getElementById('texto-inicial');
             const botonLimpiar = document.querySelector('#boton-inicio button');
@@ -467,8 +511,39 @@
             let isPanelActionInProgress = false;
             let panelTransitionTimeout;
             let contentTransitionTimeout;
+            let activeContent = null;
+
+            function setActiveContent(elementToShow) {
+                clearTimeout(contentTransitionTimeout);
+
+                const elementsToHide = [textoInicial, iframeContenido].filter(el => el !== elementToShow);
+
+                elementsToHide.forEach(el => {
+                    if (el.classList.contains('content-visible')) {
+                        el.classList.remove('content-visible');
+                        el.classList.add('content-hiding');
+                        el.addEventListener('transitionend', () => {
+                            el.classList.remove('content-hiding');
+                        }, { once: true });
+                    }
+                });
+
+                contentTransitionTimeout = setTimeout(() => {
+                    if (elementToShow) {
+                         requestAnimationFrame(() => {
+                             elementToShow.classList.remove('content-hiding');
+                             elementToShow.classList.add('content-visible');
+                             activeContent = elementToShow;
+                         });
+                    } else {
+                        activeContent = null;
+                    }
+                }, elementsToHide.some(el => el.classList.contains('content-hiding')) ? transitionDuration * 0.5 : 0);
+            }
+
 
             function handleTransitionEnd(element, callback) {
+                if (!element) return;
                 if (element === panelNavegacion) {
                     clearTimeout(panelTransitionTimeout);
                 }
@@ -522,13 +597,7 @@
                  panelNavegacion.setAttribute('aria-hidden', 'true');
                  menuToggle.classList.remove('icon-rotated');
                  menuToggle.setAttribute('aria-expanded', 'false');
-                 handleTransitionEnd(panelNavegacion, () => {
-                    if (!panelNavegacion.classList.contains('panel-visible')) {
-                       requestAnimationFrame(() => {
-                          /* panelNavegacion.style.display = 'none'; // Consider removing this line entirely if flex/transform handles hiding well */
-                       });
-                    }
-                 });
+                 handleTransitionEnd(panelNavegacion);
             }
 
             function togglePanel() {
@@ -542,32 +611,19 @@
 
             function cargarUrlEnIframe(url) {
                 ocultarPanel();
-                clearTimeout(contentTransitionTimeout);
 
                 if (url && url !== "#") {
-                    if (!textoInicial.classList.contains('content-hidden')) {
-                        textoInicial.classList.add('content-hidden');
-                    }
-                    if (!iframeContenido.classList.contains('content-hidden')) {
-                         iframeContenido.classList.add('content-hidden');
-                    }
-
-
-                    contentTransitionTimeout = setTimeout(() => {
-                        try {
-                            iframeContenido.src = url;
-                             requestAnimationFrame(() => {
-                                iframeContenido.classList.remove('content-hidden');
-                            });
-                        } catch (e) {
-                            volverAlInicio(true);
-                        }
-                    }, transitionDuration * 0.5);
-
-                } else {
-                     if (!iframeContenido.classList.contains('content-hidden')) {
-                        volverAlInicio(false);
+                     if (activeContent !== iframeContenido || iframeContenido.src !== url) {
+                         try {
+                             iframeContenido.src = url;
+                         } catch (e) {
+                             volverAlInicio(true);
+                             return;
+                         }
+                         setActiveContent(iframeContenido);
                      }
+                } else {
+                     volverAlInicio(false);
                 }
             }
 
@@ -575,39 +631,33 @@
                  if (forceHidePanel) {
                      ocultarPanel();
                  }
-                if (!textoInicial.classList.contains('content-hidden')) return;
 
-                clearTimeout(contentTransitionTimeout);
-                iframeContenido.classList.add('content-hidden');
-
-                 contentTransitionTimeout = setTimeout(() => {
-                     if (iframeContenido.classList.contains('content-hidden')) {
-                         try {
-                             iframeContenido.src = 'about:blank';
-                          } catch (e) { /* Ignore potential cleanup error */ }
+                 if (activeContent !== textoInicial) {
+                     if (iframeContenido.classList.contains('content-visible')) {
+                          try {
+                              iframeContenido.src = 'about:blank';
+                           } catch (e) {}
                      }
-                     requestAnimationFrame(() => {
-                        textoInicial.classList.remove('content-hidden');
-                     });
-                 }, transitionDuration * 0.5);
+                      setActiveContent(textoInicial);
+                 }
             }
 
             menuToggle.addEventListener('click', togglePanel);
 
             botonesPanel.forEach(boton => {
-                boton.addEventListener('click', () => {
+                boton.addEventListener('click', (e) => {
+                    e.preventDefault();
                     const url = boton.dataset.url;
-                    cargarUrlEnIframe(url);
+                    if (url) {
+                         cargarUrlEnIframe(url);
+                    }
                 });
             });
 
             botonLimpiar.addEventListener('click', () => volverAlInicio(true));
 
-
             requestAnimationFrame(() => {
-                textoInicial.classList.remove('content-hidden');
-                iframeContenido.classList.add('content-hidden');
-                try { iframeContenido.src = 'about:blank'; } catch (e) { /* Ignore */ }
+                setActiveContent(textoInicial);
                 panelNavegacion.setAttribute('aria-hidden', 'true');
                 menuToggle.setAttribute('aria-expanded', 'false');
                 panelNavegacion.classList.remove('panel-visible');
